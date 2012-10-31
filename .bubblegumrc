@@ -1,0 +1,22 @@
+{
+	"layout" : [
+		{ "view_type": "StatusView",
+		  "extents": [ 8, 80, 0, 0 ]
+		},
+
+		{ "view_type": "PlaylistView",
+		  "extents": [ 25, 80, 9, 0 ]
+		},
+
+		{ "view_type": "DebugView",
+		  "extents": [ 15, 80, 34, 0 ]
+		}
+	],
+
+	"preload_playlist": "file:///data/music/biking.pls",
+
+	"title_format": [
+		"%A – %T",
+		"%T"
+	]
+}
