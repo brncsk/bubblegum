@@ -10,13 +10,13 @@ namespace Bubblegum
 	public abstract class App : Object
 	{
 		
-		public static ViewManager view_manager { get { return _view_manager; } }
+		public static LayoutManager view_manager { get { return _view_manager; } }
 		public static InputManager input_manager { get { return _input_manager; } }
 		public static PlaybackManager playback_manager { get { return _playback_manager; } }
 		public static AudioPlayer player { get { return _player; } }
 		public static EventLog event_log { get { return _event_log; }}
 
-		private static ViewManager _view_manager;
+		private static LayoutManager _view_manager;
 		private static InputManager _input_manager;
 		private static PlaybackManager _playback_manager;
 		private static AudioPlayer _player;
@@ -30,7 +30,7 @@ namespace Bubblegum
 
 		public static void initialize () {
 			_event_log = new EventLog();
-			_view_manager = new ViewManager();
+			_view_manager = new LayoutManager();
 			_player = new AudioPlayer();
 			_playback_manager = new PlaybackManager();
 

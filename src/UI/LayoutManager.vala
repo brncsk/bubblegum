@@ -7,7 +7,7 @@ using Bubblegum.Core;
 
 namespace Bubblegum.UI
 {
-	public class ViewManager : Object
+	public class LayoutManager : Object
 	{
 		public signal void view_changed(View v);
 
@@ -17,7 +17,7 @@ namespace Bubblegum.UI
 
 		private HashMap<string, Type> view_type_registry = new HashMap<string, Type>();
 
-		public ViewManager () {
+		public LayoutManager () {
 			GFX.init();
 			Curses.initscr();
 			Curses.start_color();

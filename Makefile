@@ -9,6 +9,7 @@ all:
 		--pkg json-glib-1.0           \
 		--target-glib=2.32            \
 		-X -lncursesw                 \
+		-X -w                         \
 		-o bubblegum                  \
 		                              \
 		src/main.vala                 \
@@ -24,7 +25,8 @@ all:
 		                              \
 		src/UI/Window.vala            \
 		src/UI/View.vala              \
-		src/UI/ViewManager.vala       \
+		src/UI/Layout.vala            \
+		src/UI/LayoutManager.vala     \
 		src/UI/ViewLayout.vala        \
 		src/UI/InputManager.vala      \
 		src/UI/GFX.vala               \
