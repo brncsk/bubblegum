@@ -155,6 +155,8 @@ namespace Bubblegum.Core
 					parse_layout_items_recursive(child, (LayoutContainer) component);
 				}
 			}
+
+			c.add_child(component);
 		}
 
 		private static LayoutExtent layout_extent_try_parse (Json.Node n) throws ConfigError {

@@ -47,6 +47,8 @@ namespace Bubblegum
 
 			_input_manager = new InputManager(bindings);
 			_playback_manager.current_playlist = Config.playlist;
+
+			_layout_manager.run();
 	
 			mainloop = new MainLoop(null, false);
 			mainloop.run();

@@ -9,7 +9,7 @@ namespace Bubblegum.UI
 	{
 		protected class InputDelegate
 		{
-			public InputCallback cb;
+			public InputCallback cb { get; owned set; }
 			public InputDelegate (InputCallback cb) { this.cb = cb; }
 		}
 

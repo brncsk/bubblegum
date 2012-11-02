@@ -214,7 +214,7 @@ namespace Bubblegum.Models
 			}
 		}
 
-		private void debug_status () {
+/*		private void debug_status () {
 			App.log("  Current: %d", current_index);
 
 			StringBuilder sb = new StringBuilder("  Available: ");
@@ -230,5 +230,6 @@ namespace Bubblegum.Models
 
 			App.log("%s", sb.str);
 		}
+*/
 	}
 }

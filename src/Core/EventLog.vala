@@ -8,10 +8,19 @@ namespace Bubblegum.Core
 		public signal void message(string s);
 		
 		private const string LOG_PATH = "bubblegum.log";
+		private const LogLevelFlags level_flags =
+			LogLevelFlags.FLAG_FATAL | LogLevelFlags.FLAG_RECURSION |
+			LogLevelFlags.LEVEL_ERROR | LogLevelFlags.LEVEL_CRITICAL |
+			LogLevelFlags.LEVEL_WARNING | LogLevelFlags.LEVEL_MESSAGE | LogLevelFlags.LEVEL_INFO;
+			
 		private StringBuilder log;
 
 		public EventLog () {
 			log = new StringBuilder();
+
+			Log.set_handler(null, level_flags, (d, l, m) => {
+				add(m);
+			});
 		}
 
 		public new void connect (MessageDispatcher d) {
