@@ -15,7 +15,7 @@ namespace Bubblegum.UI
 		private View current_view;
 		private int current_index;
 
-		private HashMap<string, Type> view_type_registry = new HashMap<string, Type>();
+		private HashMap<string, Type> component_type_registry = new HashMap<string, Type>();
 
 		public LayoutManager () {
 			GFX.init();
@@ -24,30 +24,26 @@ namespace Bubblegum.UI
 			GFX.use_default_colors();
 
 			// Register built-in view types
-			view_type_registry["StatusView"] = typeof(StatusView);
-			view_type_registry["PlaylistView"] = typeof(PlaylistView);
-			view_type_registry["LogView"] = typeof(LogView);
+			component_type_registry["StatusView"] = typeof(StatusView);
+			component_type_registry["PlaylistView"] = typeof(PlaylistView);
+			component_type_registry["LogView"] = typeof(LogView);
+			component_type_registry["VBox"] = typeof(LayoutVBox);
+//			component_type_registry["HBox"] = typeof(LayoutHBox);
+			
 		}
 
-		public void set_layout (ViewLayout l) {
-			if (l.items.is_empty) {
-				return;
-			}
-
-			current_layout = l;
-			foreach (ViewLayoutItem i in current_layout.items) {
-				if(!view_type_registry.has_key(i.type)) {
-					App.log("Invalid view type: %s.", i.type);
-					continue;
-				}
-
-				i.view = (View) Object.new(view_type_registry[i.type]);
-				i.view.init(i.extents);
-			}
-
-			set_view(current_index = 0);
+		public void run () {
+			
 		}
 
+		public LayoutComponent? get_component_instance_for_name (string type_name) {
+			if (!component_type_registry.has_key(type_name)) {
+				return null;
+			}
+
+			return (LayoutComponent) Object.new(component_type_registry[type_name]);
+		}
+		
 		public void set_view (int index) {
 			View v = current_layout.items[index].view;
 			current_view = v;

@@ -41,7 +41,7 @@ namespace Bubblegum.UI
 				this.global_bindings[k] = global_bindings[k];
 			}
 			
-			App.view_manager.view_changed.connect(view_changed);
+			App.layout_manager.view_changed.connect(view_changed);
 
 			running = true;
 

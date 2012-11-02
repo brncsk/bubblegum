@@ -1,20 +1,15 @@
-{ "layout": [
+{ "layout": { "type": "VBox",
+      "children": [
 
-    { "type": "vbox",
-      "contents": [
-
-	    { "type": "view",
-	      "viewtype": "StatusView",
-          "height": 8
+	    { "type": "StatusView",
+          "min_extents": [1, '20%']
         },
 
-        { "type": "view",
-          "viewtype": "PlaylistView"
+        { "type": "PlaylistView"
         }
 
       ]
-    }
-  ],
+    },
 
   "preload_playlist": "file:///data/music/biking.pls",
 

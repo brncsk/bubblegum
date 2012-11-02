@@ -37,21 +37,23 @@ namespace Bubblegum.UI {
 		public abstract LayoutExtentStruct get_minimum_extents ();
 		public abstract LayoutExtentStruct get_preferred_extents ();
 		public abstract LayoutExtentStruct get_maximum_extents ();
+
 		public abstract void compute_layout (WindowExtents w);
 	}
 
 	public abstract class LayoutContainer : GLib.Object, LayoutComponent
 	{
-		protected LayoutExtentStruct _preferred_extent;
 		protected LinkedList<LayoutComponent> children = new LinkedList<LayoutComponent>();		
 
 		public virtual LayoutExtentStruct get_preferred_extents () {
-			return _preferred_extent;
+			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
 		}
-		public abstract LayoutExtentStruct get_minimum_extents ();
-		public abstract LayoutExtentStruct get_maximum_extents ();
-
-		public abstract void compute_layout (WindowExtents w);
+		public virtual LayoutExtentStruct get_minimum_extents () {
+			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
+		}
+		public virtual LayoutExtentStruct get_maximum_extents () {
+			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
+		}
 
 		public virtual void add_child (LayoutComponent c) {
 			children.add(c);
@@ -60,6 +62,16 @@ namespace Bubblegum.UI {
 		public virtual void remove_child (LayoutComponent c) {
 			children.remove(c);
 		}
+		
+		public abstract void compute_layout (WindowExtents w);
+	}
+
+	public class LayoutRoot : LayoutContainer {
+
+		public override void compute_layout (WindowExtents w) {
+			children.first().compute_layout(w);
+		}
+
 	}
 
 	public class LayoutVBox : LayoutContainer {
@@ -82,13 +94,6 @@ namespace Bubblegum.UI {
 			}
 
 			return min_extents;
-		}
-
-		public override LayoutExtentStruct get_maximum_extents () {
-			return {
-				LayoutExtent.DONT_CARE,
-				LayoutExtent.DONT_CARE
-			};
 		}
 
 		public override void compute_layout (WindowExtents w) {

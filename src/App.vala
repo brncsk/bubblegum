@@ -10,13 +10,13 @@ namespace Bubblegum
 	public abstract class App : Object
 	{
 		
-		public static LayoutManager view_manager { get { return _view_manager; } }
+		public static LayoutManager layout_manager { get { return _layout_manager; } }
 		public static InputManager input_manager { get { return _input_manager; } }
 		public static PlaybackManager playback_manager { get { return _playback_manager; } }
 		public static AudioPlayer player { get { return _player; } }
 		public static EventLog event_log { get { return _event_log; }}
 
-		private static LayoutManager _view_manager;
+		private static LayoutManager _layout_manager;
 		private static InputManager _input_manager;
 		private static PlaybackManager _playback_manager;
 		private static AudioPlayer _player;
@@ -30,7 +30,7 @@ namespace Bubblegum
 
 		public static void initialize () {
 			_event_log = new EventLog();
-			_view_manager = new LayoutManager();
+			_layout_manager = new LayoutManager();
 			_player = new AudioPlayer();
 			_playback_manager = new PlaybackManager();
 
@@ -43,10 +43,9 @@ namespace Bubblegum
 			bindings['q'] = quit;
 			bindings['S'] = () => { _playback_manager.shuffle = !_playback_manager.shuffle; };
 			bindings['R'] = () => { _playback_manager.repeat_mode = !_playback_manager.repeat_mode; };
-			bindings[ 9 ] = view_manager.cycle_views;
+			bindings[ 9 ] = layout_manager.cycle_views;
 
 			_input_manager = new InputManager(bindings);
-			_view_manager.set_layout(Config.layout);
 			_playback_manager.current_playlist = Config.playlist;
 	
 			mainloop = new MainLoop(null, false);
@@ -66,7 +65,7 @@ namespace Bubblegum
 
 		public static void quit () {
 			_input_manager.quit();
-			_view_manager.quit();
+			_layout_manager.quit();
 			_event_log.quit();
 			mainloop.quit();
 		}
