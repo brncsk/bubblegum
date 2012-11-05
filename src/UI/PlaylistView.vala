@@ -14,8 +14,8 @@ namespace Bubblegum.UI
 
 		private Window list;
 
-		public override void init (WindowExtents e) {
-			this.decor = new WindowDecoration(
+		construct {
+			decor = new WindowDecoration(
 				"", "",
 				"", "",
 				" ", " ",
@@ -25,12 +25,14 @@ namespace Bubblegum.UI
 				{250, -1}, {239, -1},
 				{-1, 239}
 			);
+		}
 
-			base.init(e);
-			
+		public override void compute_layout (WindowExtents e) throws LayoutError {
+			base.compute_layout(e);
+
 			WindowExtents oe = { e.nlines - 3, e.ncols - 2, 1, 0 };
 
-			list = canvas.create_subwindow(oe, true, new WindowDecoration (
+			list = canvas.create_subwindow(oe, true, new WindowDecoration(
 					"", "",
 					"", "",
 					" ", " ",
@@ -42,7 +44,11 @@ namespace Bubblegum.UI
 					{245, 235}
 				)
 			);
-			
+
+			request_update();
+		}
+
+		public override void init () {
 			App.playback_manager.playlist_changed.connect((p) => {
 				current_playlist = p;
 				request_update();

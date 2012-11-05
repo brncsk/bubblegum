@@ -3,15 +3,30 @@ using Gee;
 
 namespace Bubblegum.UI {
 
+	public errordomain LayoutError
+	{
+		TERMINAL_TOO_SMALL
+	}
+
 	public enum LayoutUnit { PERCENT, ABSOLUTE }
 
-	public struct LayoutExtent
+	public class LayoutExtent : Object
 	{
-		public static const LayoutExtent DONT_CARE = {-1, LayoutUnit.ABSOLUTE};
-		public static const LayoutExtent ZERO = {0, LayoutUnit.ABSOLUTE};
 
 		public int q;
 		public LayoutUnit u;
+
+		public LayoutExtent (int q, LayoutUnit u) {
+			this.q = q; this.u = u;
+		}
+
+		public LayoutExtent.DONT_CARE () {
+			this.q = -1; this.u = LayoutUnit.ABSOLUTE;
+		}
+
+		public LayoutExtent.ZERO () {
+			this.q = 0; this.u = LayoutUnit.ABSOLUTE;
+		}
 
 		public bool is_dont_care () {
 			return (this.q == -1) && (this.u == LayoutUnit.ABSOLUTE);
@@ -26,33 +41,48 @@ namespace Bubblegum.UI {
 		}
 	}
 
-	public struct LayoutExtentStruct
+	public class LayoutExtentPair : Object
 	{
 		public LayoutExtent height;
 		public LayoutExtent width;
+
+		public LayoutExtentPair (LayoutExtent height, LayoutExtent width) {
+			this.height = height; this.width = width;
+		}
+
+		public LayoutExtentPair.DONT_CARE () {
+			this.height = new LayoutExtent.DONT_CARE();
+			this.width = new LayoutExtent.DONT_CARE();
+		}
+
+		public LayoutExtentPair.ZERO () {
+			this.height = new LayoutExtent.ZERO();
+			this.width = new LayoutExtent.ZERO();
+		}
 	}
 
 	public interface LayoutComponent : GLib.Object
 	{
-		public abstract LayoutExtentStruct get_minimum_extents ();
-		public abstract LayoutExtentStruct get_preferred_extents ();
-		public abstract LayoutExtentStruct get_maximum_extents ();
+		public abstract LayoutExtentPair get_minimum_extents ();
+		public abstract LayoutExtentPair get_preferred_extents ();
+		public abstract LayoutExtentPair get_maximum_extents ();
 
-		public abstract void compute_layout (WindowExtents w);
+		public abstract void compute_layout (WindowExtents w) throws LayoutError;
 	}
 
 	public abstract class LayoutContainer : GLib.Object, LayoutComponent
 	{
 		protected LinkedList<LayoutComponent> children = new LinkedList<LayoutComponent>();		
 
-		public virtual LayoutExtentStruct get_preferred_extents () {
-			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
+		public virtual LayoutExtentPair get_preferred_extents () {
+			return new LayoutExtentPair.DONT_CARE();
 		}
-		public virtual LayoutExtentStruct get_minimum_extents () {
-			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
+		public virtual LayoutExtentPair get_minimum_extents () {
+			return new LayoutExtentPair.DONT_CARE();
+
 		}
-		public virtual LayoutExtentStruct get_maximum_extents () {
-			return { LayoutExtent.DONT_CARE, LayoutExtent.DONT_CARE };
+		public virtual LayoutExtentPair get_maximum_extents () {
+			return new LayoutExtentPair.DONT_CARE();
 		}
 
 		public virtual void add_child (LayoutComponent c) {
@@ -63,24 +93,23 @@ namespace Bubblegum.UI {
 			children.remove(c);
 		}
 		
-		public abstract void compute_layout (WindowExtents w);
+		public abstract void compute_layout (WindowExtents w) throws LayoutError;
 	}
 
-	public class LayoutRoot : LayoutContainer {
+	public class LayoutRoot : LayoutContainer
+	{
 
-		public override void compute_layout (WindowExtents w) {
+		public override void compute_layout (WindowExtents w) throws LayoutError {
 			children.first().compute_layout(w);
 		}
 
 	}
 
-	public class LayoutVBox : LayoutContainer {
+	public class LayoutVBox : LayoutContainer
+	{
 	
-		public override LayoutExtentStruct get_minimum_extents () {
-			LayoutExtentStruct min_extents = {
-				LayoutExtent.ZERO,
-				LayoutExtent.ZERO
-			};
+		public override LayoutExtentPair get_minimum_extents () {
+			LayoutExtentPair min_extents = new LayoutExtentPair.ZERO();
 
 			foreach (var child in children) {
 				var ce = child.get_minimum_extents();
@@ -96,84 +125,89 @@ namespace Bubblegum.UI {
 			return min_extents;
 		}
 
-		public override void compute_layout (WindowExtents w) {
-			LayoutExtent min, max, pref;
+		public override void compute_layout (WindowExtents w) throws LayoutError {
+			LayoutExtent min, pref, max;
 
-			int allocated_height = 0;
+			int height;
+			int remaining = w.nlines;
 			bool enable_flex = false;
+			int padding = this.get_data<int?>("_layout_padding") ?? 0;
+			int spacing = this.get_data<int?>("_layout_spacing") ?? 0;
 			
 			foreach (var child in children) {
-				int height;
 				bool is_flexible;
 				min = child.get_minimum_extents().height;
 				pref = child.get_preferred_extents().height;
 
-				child.set_data("_layout_ncols", w.ncols);
-				child.set_data("_layout_finished", false);
+				child.set_data<int?>("_layout_ncols", w.ncols);
 
-				
 				if (pref.is_absolute()) {
 					height = pref.q;
-					child.set_data("_layout_finished", true);
 					is_flexible = false;
-
 				} else if (pref.is_percent()) {
-					height = (pref.q * w.nlines);
+					height = (int) Math.round((pref.q / 100.0) * w.nlines);
 					is_flexible = true;
-
 				} else {
 					height = min.q;
 					is_flexible = true;
 				}
-				
-				child.set_data("_layout_nlines", height);
-				child.set_data("_layout_is_flexible", (bool) is_flexible);
+
+				child.set_data<int?>("_layout_nlines", height);
+				child.set_data<bool?>("_layout_is_flexible", is_flexible);
 				enable_flex |= is_flexible;
-				allocated_height += height;
+				remaining -= height;
 			}
+
+			remaining -= padding * children.size;
+			remaining -= spacing * (children.size - 1);
 
 			// If we have children willing to change their size and we have some
 			// more space to distribute, start optimizing.
-			if (enable_flex && allocated_height != w.nlines) {
+			if (enable_flex && remaining != 0) {
+				double flex;
+				int pot;
+				bool grow = remaining > 0;
 
-				bool grow = allocated_height < w.nlines; 
-				int remaining = (w.nlines - allocated_height).abs();
+				App.log("\n****** Begin flexing. ******");
+				App.log("w.nlines = %d, remaining = %d", w.nlines, remaining);
 
 				foreach (var child in children) {
-
-					if (child.get_data<bool>("_layout_is_flexible") == false) {
+					if (child.get_data<bool?>("_layout_is_flexible") == false) {
 						continue;
 					}
 
 					min = child.get_minimum_extents().height;
 					max = child.get_maximum_extents().height;
-					int height = child.get_data("_layout_nlines");
-					int flexibility = child.get_data("_layout_flexibility");
+					height = child.get_data<int?>("_layout_nlines");
+					flex = child.get_data<double?>("_layout_flexibility") ?? 1;
 
-					child.set_data("_layout_flex_potential", grow
-						? ((!max.is_dont_care()) ? max.q - height : -1)
-						: ((!min.is_dont_care()) ? height - min.q : -1)
+					App.log("height = %d, flexibility = %lf", height, flex);
+
+					child.set_data<double?>("_layout_flexibility", grow ? flex : 1 / flex);
+					child.set_data<int?>("_layout_flex_potential", grow
+						? ((!max.is_dont_care()) ? max.q - height : int.MAX)
+						: ((!min.is_dont_care()) ? height - min.q : int.MIN)
 					);
-
-					child.set_data("_layout_flexibility", grow
-						? flexibility
-						: 1 / flexibility);
-
-					child.set_data("_layout_flex_offset", 0);
 				}
 
 				while (remaining != 0) {
-					int flex_step = int.MAX;
-					int flex_sum = 0;
-					int flex, offset, pot;
+					double flex_step = int.MAX;
+					double flex_sum = 0;
+					double rounding_offset = 0;
 
 					foreach (var child in children) {
-						flex = child.get_data("_layout_flexibility");
-						pot = child.get_data("_layout_flex_potential");
+						if (child.get_data<bool?>("_layout_is_flexible") == false) {
+							continue;
+						}
+
+						flex = child.get_data<double?>("_layout_flexibility");
+						pot = child.get_data<int?>("_layout_flex_potential");
+
+						App.log("flex = %lf, pot = %d", flex, pot);
 
 						if (pot > 0) {
 							flex_sum += flex;
-							flex_step = int.min(flex_step, pot / flex);
+							flex_step = double.min(flex_step, pot / flex);
 						}
 					}
 
@@ -181,19 +215,25 @@ namespace Bubblegum.UI {
 						break;
 					}
 
-					flex_step = int.min(remaining, flex_step * flex_sum) / flex_sum;
+					flex_step = double.min(remaining, flex_step * flex_sum) / flex_sum;
 
-					var rounding_offset = 0;
+					App.log("flex_sum = %lf, flex_step = %lf", flex_sum, flex_step);
 
 					foreach (var child in children) {
-						flex = child.get_data("_layout_flexibility");
-						offset = child.get_data("_layout_flex_offset");
-						pot = child.get_data("_layout_flex_potential");
+						if (child.get_data<bool?>("_layout_is_flexible") == false) {
+							continue;
+						}
+
+						height = child.get_data<int?>("_layout_nlines");
+						flex = child.get_data<double?>("_layout_flexibility");
+						pot = child.get_data<int?>("_layout_flex_potential");
+
+						App.log("flex = %lf, old height = %d, old pot = %d", flex, height, pot);
 
 						if (pot > 0) {
 							int current_offset = int.min(
 								remaining,
-								int.min(pot, (int) Math.ceil(flex_step* flex))
+								int.min(pot, (int) Math.ceil(flex_step * flex))
 							);
 
 							rounding_offset += current_offset - flex_step * flex;
@@ -202,16 +242,39 @@ namespace Bubblegum.UI {
 								current_offset -= 1;
 							}
 
-							child.set_data("_layout_flex_potential", flex - current_offset);
-							child.set_data("_layout_flex_offset", offset + (grow
-								?  current_offset
-								: -current_offset
+							child.set_data<int?>("_layout_flex_potential", pot - current_offset);
+
+							child.set_data<int?>(
+								"_layout_nlines",
+								(int) (height + (grow ?  current_offset : -current_offset)
 							));
+
+							App.log("new height = %d, new pot = %d", (int) (height + (grow
+									?  current_offset
+									: -current_offset
+								)), (int) (pot - current_offset));
 
 							remaining -= current_offset;
 						}
 					}
 				}
+			}
+
+			if(!enable_flex && remaining < 0) {
+				throw new LayoutError.TERMINAL_TOO_SMALL("Terminal too small :(.");
+			}
+
+			int offset = padding;
+
+			foreach (var child in children) {
+				child.compute_layout(WindowExtents() {
+					x = w.x + padding,
+					y = w.y + offset,
+					ncols = w.ncols - (2 * padding),
+					nlines = child.get_data<int?>("_layout_nlines")
+				});
+				offset += child.get_data<int?>("_layout_nlines") + spacing;
+				App.log("offset: %d", offset);
 			}
 		}
 	}

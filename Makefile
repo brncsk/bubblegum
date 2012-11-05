@@ -13,6 +13,7 @@ all:
 		-o bubblegum                  \
 		                              \
 		src/main.vala                 \
+		src/Resources.vala            \
 		src/App.vala                  \
 		                              \
 		src/Core/EventLog.vala        \

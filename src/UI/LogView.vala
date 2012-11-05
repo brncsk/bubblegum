@@ -9,17 +9,17 @@ namespace Bubblegum.UI
 
 	public class LogView : View
 	{
-		public override void init (WindowExtents e) {
+		construct {
 			decor.c = { 239, -1 };
 			decor.b = { 239, -1 };
 			decor.bg = { 245, -1 };
 			decor.tb = { 239, -1 };
 			decor.title = "Event log";
-			base.init(e);
-			
+		}
+
+		public override void init () {
 			App.event_log.connect((m) => {
-				canvas.printw("%s\n", m);
-				refresh();
+//				canvas.printw("%s\n", m);
 			});
 		}
 

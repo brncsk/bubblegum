@@ -10,23 +10,26 @@ namespace Bubblegum.UI
 {
 	public class StatusView : View
 	{
-		public override void init (WindowExtents e) {
+		private bool first_update = true;
+
+		construct {
+			pref_extents.height.q = 8;
 			decor = new WindowDecoration (
 					"", "",
 					"", "",
 					" ", " ",
 					"", "",
 					
-					" Welcome to Bubblegum pre-alpha! ",
+					" Bubblegum! ",
 					TextAttribute.BOLD,
 
 					{108, -1}, {-1, 108},
 					{204, -1}, {108, -1},
 					{59, 108}
 			);
+		}
 
-			base.init (e);
-
+		public override void init () {
 			App.playback_manager.media_changed.connect((m) => { request_update(); });
 			App.playback_manager.playback_state_changed.connect((s) => { request_update(); });
 			App.playback_manager.repeat_mode_changed.connect((s) => { request_update(); });
@@ -34,6 +37,26 @@ namespace Bubblegum.UI
 		}
 
 		protected override void update () {
+			if (first_update) {
+				first_update = false;
+
+				canvas.pretty_print(1, "┏┓ ╻ ╻┏┓ ┏┓ ╻  ┏━╸┏━╸╻ ╻┏┳┓╻",
+					TextAlignment.CENTER, TextAttribute.BOLD, ColorPair(158, 108));
+
+				canvas.pretty_print(2, "┣┻┓┃ ┃┣┻┓┣┻┓┃  ┣╸ ┃╺┓┃ ┃┃┃┃╹",
+					TextAlignment.CENTER, TextAttribute.BOLD, ColorPair(158, 108));
+				
+				canvas.pretty_print(3, "┗━┛┗━┛┗━┛┗━┛┗━╸┗━╸┗━┛┗━┛╹ ╹╹",
+					TextAlignment.CENTER, TextAttribute.BOLD, ColorPair(158, 108));
+
+				canvas.pretty_print(5, Resources.APP_VERSION,
+					TextAlignment.CENTER, 0, ColorPair(36, 108));
+
+				Timeout.add(5000, () => { request_update(); return false; });
+
+				return;
+			}
+
 			canvas.pretty_print(0, "[REPEAT]",
 				TextAlignment.RIGHT,
 				App.playback_manager.repeat_mode ? TextAttribute.BOLD : 0,
@@ -45,7 +68,7 @@ namespace Bubblegum.UI
 				App.playback_manager.shuffle ? TextAttribute.BOLD : 0,
 				App.playback_manager.shuffle ? ColorPair(158, 108) : ColorPair(59, 108)
 			);
-				
+
 			if (App.playback_manager.current_media != null) {
 				canvas.pretty_print(2,
 					App.playback_manager.current_media.string_repr(Config.title_format),

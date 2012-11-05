@@ -108,35 +108,41 @@ namespace Bubblegum.Core
 				);
 			}
 
-			Json.Node children;
+			foreach(string type in new string[] {"min", "max", "pref"}) {
+				foreach(string dim in new string[] {"width", "height"}) {
+					string key = type + "_" + dim;
 
-			foreach(string s in new string[] {"min", "max", "pref"}) {
-				Json.Node e;
-				Json.Array a;
-				string key = s + "_extents";
-
-				App.log("%s: %d", key, o.has_member(key));
-
-				if (o.has_member(key)) {
-					if((e = o.get_member("min_extents")).get_node_type() != Json.NodeType.ARRAY) {
-						throw new ConfigError.CONFIG_LAYOUT_ERROR("'%s' must be an array.'", key);
+					if (o.has_member(key)) {
+						App.log("got member: %s", key);
+						component.set_data<LayoutExtent>("_layout_" + key,
+							layout_extent_try_parse(o.get_member(key))
+						);
 					}
-
-					a = e.get_array();
-
-					if(a.get_length() != 2) {
-						throw new ConfigError.CONFIG_LAYOUT_ERROR("Extents must have two elements.");
-					}
-
-					unowned LayoutExtentStruct extents = LayoutExtentStruct();
-
-					extents.width = layout_extent_try_parse(a.get_element(0));
-					extents.height = layout_extent_try_parse(a.get_element(1));
-
-					component.set_data<LayoutExtentStruct *>("_layout_" + key, &extents);
-
 				}
 			}
+
+			Json.Node padding;
+
+			if (o.has_member("padding")) {
+				
+				if((padding = o.get_member("padding")).get_value_type() != typeof(int64)) {
+					throw new ConfigError.CONFIG_LAYOUT_ERROR("Layout item has invalid 'padding' member.");
+				}
+
+				component.set_data<int?>("_layout_padding", (int) padding.get_int());
+			}
+
+			Json.Node spacing;
+
+			if (o.has_member("spacing")) {
+				if((spacing = o.get_member("spacing")).get_value_type() != typeof(int64)) {
+					throw new ConfigError.CONFIG_LAYOUT_ERROR("Layout item has invalid 'spacing' member.");
+				}
+
+				component.set_data<int?>("_layout_spacing", (int) spacing.get_int());
+			}
+
+			Json.Node children;
 
 			if (o.has_member("children")) {
 				if((children = o.get_member("children")).get_node_type() != Json.NodeType.ARRAY) {
@@ -177,17 +183,17 @@ namespace Bubblegum.Core
 					);
 				}
 
-				return LayoutExtent () {
-					u = LayoutUnit.PERCENT,
-					q = (int) q
-				};
+				return new LayoutExtent(
+					(int) q,
+					LayoutUnit.PERCENT
+				);
 
 			} else {
 
-				return LayoutExtent () {
-					u = LayoutUnit.ABSOLUTE,
-					q = (int) n.get_int()
-				};
+				return new LayoutExtent(
+					(int) n.get_int(),
+					LayoutUnit.ABSOLUTE
+				);
 
 			}
 		}

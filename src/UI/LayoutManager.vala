@@ -18,10 +18,10 @@ namespace Bubblegum.UI
 		private HashMap<string, Type> component_type_registry = new HashMap<string, Type>();
 
 		public LayoutManager () {
-//			GFX.init();
-//			Curses.initscr();
-//			Curses.start_color();
-//			GFX.use_default_colors();
+			GFX.init();
+			Curses.initscr();
+			Curses.start_color();
+			GFX.use_default_colors();
 
 			// Register built-in view types
 			component_type_registry["StatusView"] = typeof(StatusView);
@@ -33,12 +33,18 @@ namespace Bubblegum.UI
 		}
 
 		public void run () {
-			Config.layout_root.compute_layout(WindowExtents () {
-				y = 0,
-				x = 0,
-				nlines = Curses.LINES,
-				ncols = Curses.COLS
-			});
+			App.log("LayoutManager.run()");
+			try {
+				Config.layout_root.compute_layout(WindowExtents() {
+					y = 0,
+					x = 0,
+					nlines = Curses.LINES,
+					ncols = Curses.COLS
+				});
+			} catch (Error e) {
+				App.log(e.message);
+				App.quit();
+			}
 		}
 
 		public LayoutComponent? get_component_instance_for_name (string type_name) {
@@ -46,7 +52,13 @@ namespace Bubblegum.UI
 				return null;
 			}
 
-			return (LayoutComponent) Object.new(component_type_registry[type_name]);
+			Object c = Object.new(component_type_registry[type_name]);
+
+			if(c is View) {
+				(c as View).init();
+			}
+
+			return (LayoutComponent) c;
 		}
 		
 		public void set_view (int index) {
