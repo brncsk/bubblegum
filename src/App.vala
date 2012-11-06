@@ -10,11 +10,11 @@ namespace Bubblegum
 	public abstract class App : Object
 	{
 		
-		public static LayoutManager layout_manager { get; private set; }
-		public static InputManager input_manager { get; private set; }
-		public static PlaybackManager playback_manager { get; private set; }
-		public static AudioPlayer player { get; private set; }
-		public static EventLog event_log { get; private set; }
+		public static LayoutManager? layout_manager { get; private set; }
+		public static InputManager? input_manager { get; private set; }
+		public static PlaybackManager? playback_manager { get; private set; }
+		public static AudioPlayer? player { get; private set; }
+		public static EventLog? event_log { get; private set; }
 
 		public delegate void SynchronizedLambda ();
 		private static StaticMutex draw_mutex;
@@ -53,17 +53,27 @@ namespace Bubblegum
 		}
 
 		public static void draw_synchronized (SynchronizedLambda d) {
-			
 			draw_mutex.lock();
 			d();
 			draw_mutex.unlock();
 		}
 
 		public static void quit () {
-			input_manager.quit();
-			layout_manager.quit();
-			event_log.quit();
-			mainloop.quit();
+			if (input_manager != null) {
+				input_manager.quit();
+			}
+
+			if (layout_manager != null) {
+				layout_manager.quit();
+			}
+
+			if (event_log != null) {
+				event_log.quit();
+			}
+
+			if (mainloop != null && mainloop.is_running()) {
+				mainloop.quit();
+			}
 		}
 	}
 }
