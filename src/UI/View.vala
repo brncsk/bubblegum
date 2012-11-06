@@ -28,9 +28,6 @@ namespace Bubblegum.UI
 		public LayoutExtentPair get_maximum_extents () { return negotiate_extents("max"); }
 
 		private LayoutExtentPair negotiate_extents (string key) {
-			LayoutExtentPair * gobj_extents_ptr =
-				this.get_data<LayoutExtentPair *>("_layout_" + key + "_extents");
-
 			LayoutExtent? gobj_width = this.get_data<LayoutExtent>("_layout_" + key + "_width");
 			LayoutExtent? gobj_height = this.get_data<LayoutExtent>("_layout_" + key + "_height");
 
