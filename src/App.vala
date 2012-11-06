@@ -7,9 +7,11 @@ using Bubblegum.Models;
 
 namespace Bubblegum
 {
+	[CCode (cname="exit")]
+	public extern void exit(int code = 0);
+
 	public abstract class App : Object
-	{
-		
+	{	
 		public static LayoutManager? layout_manager { get; private set; }
 		public static InputManager? input_manager { get; private set; }
 		public static PlaybackManager? playback_manager { get; private set; }
@@ -34,7 +36,7 @@ namespace Bubblegum
 			bindings['p'] = playback_manager.previous;
 			bindings['n'] = playback_manager.next;
 			bindings[' '] = playback_manager.toggle;
-			bindings['q'] = quit;
+			bindings['q'] = () => { quit(); };
 			bindings['S'] = () => { playback_manager.shuffle = !playback_manager.shuffle; };
 			bindings['R'] = () => { playback_manager.repeat_mode = !playback_manager.repeat_mode; };
 			bindings[ 9 ] = layout_manager.cycle_views;
@@ -58,7 +60,7 @@ namespace Bubblegum
 			draw_mutex.unlock();
 		}
 
-		public static void quit () {
+		public static void quit (int code = 0) {
 			if (input_manager != null) {
 				input_manager.quit();
 			}
@@ -74,6 +76,8 @@ namespace Bubblegum
 			if (mainloop != null && mainloop.is_running()) {
 				mainloop.quit();
 			}
+
+			exit(code);
 		}
 	}
 }
