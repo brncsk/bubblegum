@@ -32,7 +32,7 @@ namespace Bubblegum.UI
 
 			WindowExtents oe = { e.nlines - 3, e.ncols - 2, 1, 0 };
 
-			list = canvas.create_subwindow(oe, true, new WindowDecoration(
+			list = window.create_subwindow(oe, true, new WindowDecoration(
 					"", "",
 					"", "",
 					" ", " ",

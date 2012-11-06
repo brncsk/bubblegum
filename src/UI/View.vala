@@ -1,20 +1,16 @@
 using GLib;
 using Gee;
 
-using Curses;
-
 namespace Bubblegum.UI
 {
 	public abstract class View : LayoutComponent, Object
 	{
 		protected InputDelegateMap bindings = new InputDelegateMap();
 
-		protected UI.Window canvas;
+		protected UI.Window window;
 		protected WindowExtents current_extents;
 		protected WindowDecoration decor = GFX.default_decoration;
 		protected bool decorated = true;
-
-		protected abstract void update ();
 
 		protected LayoutExtentPair min_extents = new LayoutExtentPair(
 			new LayoutExtent(3, LayoutUnit.ABSOLUTE),
@@ -23,6 +19,8 @@ namespace Bubblegum.UI
 		protected LayoutExtentPair pref_extents = new LayoutExtentPair.DONT_CARE();
 		protected LayoutExtentPair max_extents = new LayoutExtentPair.DONT_CARE();
 
+		protected abstract void update ();
+		
 		public LayoutExtentPair get_minimum_extents () { return negotiate_extents("min"); }
 		public LayoutExtentPair get_preferred_extents () { return negotiate_extents("pref"); }
 		public LayoutExtentPair get_maximum_extents () { return negotiate_extents("max"); }
@@ -54,7 +52,7 @@ namespace Bubblegum.UI
 
 		public virtual void compute_layout (WindowExtents e) throws LayoutError {
 			current_extents = e;
-			canvas = new Window(e, decorated, decor);
+			window = new UI.Window(e, decorated, decor);
 			request_update();
 		}
 
@@ -66,9 +64,9 @@ namespace Bubblegum.UI
 
 		public void request_update () {
 			App.draw_synchronized(() => {
-				canvas.erase();
+				window.erase();
 				update();
-				canvas.refresh();
+				window.refresh(!App.layout_manager.computing_layout);
 			});
 		}
 	}
