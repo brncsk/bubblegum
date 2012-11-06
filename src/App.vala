@@ -23,10 +23,10 @@ namespace Bubblegum
 		private static InputDelegateMap bindings;
 
 		public static void initialize () {
-			_event_log = new EventLog();
-			_layout_manager = new LayoutManager();
-			_player = new AudioPlayer();
-			_playback_manager = new PlaybackManager();
+			event_log = new EventLog();
+			layout_manager = new LayoutManager();
+			player = new AudioPlayer();
+			playback_manager = new PlaybackManager();
 
 			Config.init();
 			
