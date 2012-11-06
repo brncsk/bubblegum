@@ -35,7 +35,6 @@ VALA_FILES = main.vala                      \
 			 UI/Layout.vala                 \
 			 UI/LayoutManager.vala          \
 			 UI/InputManager.vala           \
-			 UI/ViewLayout.vala             \
 			 UI/GFX.vala                    \
 			                                \
 			 UI/StatusView.vala             \

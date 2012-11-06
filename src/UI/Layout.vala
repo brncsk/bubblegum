@@ -60,6 +60,14 @@ namespace Bubblegum.UI {
 			this.width = new LayoutExtent.ZERO();
 		}
 	}
+	
+	public struct WindowExtents
+	{
+		public int nlines;
+		public int ncols;
+		public int y;
+		public int x;
+	}
 
 	public interface LayoutComponent : GLib.Object
 	{

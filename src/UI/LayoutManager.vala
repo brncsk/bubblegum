@@ -11,10 +11,6 @@ namespace Bubblegum.UI
 	{
 		public signal void view_changed(View v);
 
-		private ViewLayout current_layout;
-		private View current_view;
-		private int current_index;
-
 		private HashMap<string, Type> component_type_registry = new HashMap<string, Type>();
 
 		public LayoutManager () {
@@ -61,21 +57,6 @@ namespace Bubblegum.UI
 			return (LayoutComponent) c;
 		}
 		
-		public void set_view (int index) {
-			View v = current_layout.items[index].view;
-			current_view = v;
-			view_changed(v);
-			v.request_update();
-		}
-
-		public void cycle_views () {
-			if (++current_index == current_layout.items.size) {
-				current_index = 0;
-			}
-
-			set_view(current_index);
-		}
-
 		public void quit () {
 			Curses.endwin();
 		}
