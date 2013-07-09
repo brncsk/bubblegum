@@ -45,9 +45,10 @@ namespace Bubblegum
 			bindings['R'] = () => { _playback_manager.repeat_mode = !_playback_manager.repeat_mode; };
 
 			_input_manager = new InputManager(bindings);
-			_playback_manager.current_playlist = Config.playlist;
 
 			_layout_manager.run();
+			
+			_playback_manager.current_playlist = Config.playlist;
 	
 			mainloop = new MainLoop(null, false);
 			mainloop.run();
@@ -58,7 +59,6 @@ namespace Bubblegum
 		}
 
 		public static void draw_synchronized (SynchronizedLambda d) {
-			
 			draw_mutex.lock();
 			d();
 			draw_mutex.unlock();

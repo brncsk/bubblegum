@@ -16,10 +16,10 @@ namespace Bubblegum.UI
 
 		construct {
 			decor = new WindowDecoration(
-				"", "",
-				"", "",
+				"", "",
+				"", "",
 				" ", " ",
-				"", "",
+				"", "",
 				" Playlist ", 0,
 				{239, -1}, {-1, 239},
 				{250, -1}, {239, -1},
@@ -28,15 +28,15 @@ namespace Bubblegum.UI
 		}
 
 		public override void compute_layout (WindowExtents e) throws LayoutError {
-			base.compute_layout(e);
+			current_extents = e;
+			window = new UI.Window(e, decorated, decor);
 
 			WindowExtents oe = { e.nlines - 3, e.ncols - 2, 1, 0 };
-
 			list = window.create_subwindow(oe, true, new WindowDecoration(
-					"", "",
-					"", "",
+					"", "",
+					"", "",
 					" ", " ",
-					"", "",
+					"", "",
 					"", 0,
 
 					{235, 239}, {-1, 235},
@@ -70,6 +70,10 @@ namespace Bubblegum.UI
 			int current_line = 0;
 
 			list.erase();
+
+			if (current_playlist == null) {
+				return;
+			}
 
 			foreach (MediaItem i in current_playlist) {
 				

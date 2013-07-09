@@ -13,7 +13,8 @@ PACKAGES =   glib-2.0                       \
 		     gstreamer-0.10                 \
 		     json-glib-1.0
 
-VALAFLAGS =  --thread                       \
+VALAFLAGS =  -g                             \
+             --thread                       \
 			 --enable-checking              \
 			 --target-glib=2.32             \
 			 --pkg=curses
@@ -31,6 +32,7 @@ VALA_FILES = main.vala                      \
 			 Models/Playlist.vala           \
 			                                \
 			 UI/Window.vala                 \
+			 UI/ScrollableWindow.vala       \
 			 UI/View.vala                   \
 			 UI/Layout.vala                 \
 			 UI/LayoutManager.vala          \
@@ -41,7 +43,7 @@ VALA_FILES = main.vala                      \
 			 UI/PlaylistView.vala           \
 			 UI/LogView.vala
 
-CFLAGS =     -lncursesw -O2 -g -pipe
+CFLAGS =     -lncursesw -O2 -g -pipe -w -lm
 VALA_CFLAGS  := `pkg-config --cflags $(PACKAGES) gthread-2.0`
 VALA_LDFLAGS := `pkg-config --libs $(PACKAGES) gthread-2.0`
 VALA_STAMP   := $(BUILD_DIR)/.stamp

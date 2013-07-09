@@ -5,16 +5,16 @@ namespace Bubblegum.UI {
 	
 	public class Window : GLib.Object {
 
-		public Curses.Window canvas { get; private owned set; }
-		public WindowExtents extents { get; private set; }
+		public Curses.Window canvas { get; protected owned set; }
+		public WindowExtents extents { get; protected set; }
 
-		public bool is_subwindow { get; private set; }
-		public bool decorated { get; private set; }
+		public bool is_subwindow { get; protected set; }
+		public bool decorated { get; protected set; }
 
-		public WindowDecoration? decoration { get; private set; }
+		public WindowDecoration? decoration { get; protected set; }
 
-		private Curses.Window decor_win;
-		private LinkedList<UI.Window> subwindows = new LinkedList<UI.Window>();
+		protected Curses.Window decor_win;
+		protected LinkedList<UI.Window> subwindows = new LinkedList<UI.Window>();
 
 		public Window (
 			WindowExtents e,
@@ -53,6 +53,10 @@ namespace Bubblegum.UI {
 			UI.Window w = new Window(e, decorated, d, canvas);
 			subwindows.add(w);
 			return w;
+		}
+
+		public void add_subwindow (UI.Window w) {
+			subwindows.add(w);
 		}
 
 		public void erase () {

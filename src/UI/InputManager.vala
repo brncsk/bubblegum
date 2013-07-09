@@ -43,13 +43,9 @@ namespace Bubblegum.UI
 			
 			App.layout_manager.view_changed.connect(view_changed);
 
-			running = true;
+			input_thread = new Thread<void*>("", this.run_input_thread);
 
-			try {
-				input_thread = new Thread<void*>.try("input-thread", this.run_input_thread);
-			} catch(Error e) {
-				stderr.printf("Failed to create UI thread.");
-			}
+			running = true;
 		}
 
 		private void view_changed (View v) {

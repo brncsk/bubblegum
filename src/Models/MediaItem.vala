@@ -89,7 +89,7 @@ namespace Bubblegum.Models
 				}
 			}
 
-			return uri;
+			return "???";
 		}
 	}
 }

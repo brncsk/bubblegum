@@ -15,10 +15,10 @@ namespace Bubblegum.UI
 		construct {
 			pref_extents.height.q = 8;
 			decor = new WindowDecoration (
-					"", "",
-					"", "",
+					"", "",
+					"", "",
 					" ", " ",
-					"", "",
+					"", "",
 					
 					" Bubblegum! ",
 					TextAttribute.BOLD,
@@ -50,7 +50,7 @@ namespace Bubblegum.UI
 					TextAlignment.CENTER, TextAttribute.BOLD, ColorPair(158, 108));
 
 				window.pretty_print(5, Resources.APP_VERSION,
-					TextAlignment.CENTER, 0, ColorPair(36, 108));
+					TextAlignment.CENTER, 0, ColorPair(85, 108));
 
 				Timeout.add(5000, () => { request_update(); return false; });
 
@@ -77,7 +77,23 @@ namespace Bubblegum.UI
 					ColorPair(158, 108)
 				);
 			}
-		
+	
+			StringBuilder sb = new StringBuilder.sized(current_extents.ncols);
+			sb.append("");
+			for(int x = 0; x < current_extents.ncols-4; x++) {
+				sb.append("");
+			}
+			sb.append("");
+
+			App.log(sb.str);
+			App.log("");
+
+			window.pretty_print(3,
+				sb.str,
+				TextAlignment.CENTER,
+				TextAttribute.BOLD,
+				ColorPair(158, 108)
+			);				
 		}
 	}
 }
