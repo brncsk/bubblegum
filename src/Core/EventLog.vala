@@ -39,9 +39,9 @@ namespace Bubblegum.Core
 		
 		public void quit () {
 			try {
-//				File.new_for_path(LOG_PATH).replace_contents(
-//					log.data, null, false, FileCreateFlags.NONE, null, null
-//				);
+				File.new_for_path(LOG_PATH).replace_contents(
+					log.data, null, false, FileCreateFlags.NONE, null, null
+				);
 			} catch (Error e) {
 				stderr.printf("Cannot write log file.");
 			}

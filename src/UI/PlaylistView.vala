@@ -59,8 +59,9 @@ namespace Bubblegum.UI
 				request_update();
 			});
 
-			App.player.media_tags_changed.connect((m) => {
+			App.player.media_metadata_changed.connect((m) => {
 				if (m in current_playlist) {
+					request_update();
 				}
 			});
 		}
@@ -78,6 +79,13 @@ namespace Bubblegum.UI
 			foreach (MediaItem i in current_playlist) {
 				
 				string tx = i.string_repr(Config.title_format);
+	
+				list.pretty_print(
+					current_line, GFX.format_gst_mmss(i.duration),
+					TextAlignment.RIGHT,
+					(i == current_media) ? TextAttribute.BOLD : 0,
+					(i == current_media) ? ColorPair(254, 235) : ColorPair(245, 235)
+				);
 
 				list.pretty_print(
 					current_line++, tx,

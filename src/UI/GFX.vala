@@ -115,6 +115,11 @@ namespace Bubblegum.UI
 			return s.str;
 		}
 
+		public static string format_gst_mmss(uint64 t) {
+			t = t / Gst.SECOND;
+			return "%02llu:%02llu".printf(t / 60, t % 60);
+		}
+
 		public static void set_colors (Curses.Window w, short fg, short bg) {
 			short pair_id = color_pair_id({fg, bg});
 			w.bkgdset(Curses.COLOR_PAIR(pair_id));

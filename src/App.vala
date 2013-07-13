@@ -68,7 +68,9 @@ namespace Bubblegum
 			_input_manager.quit();
 			_layout_manager.quit();
 			_event_log.quit();
+			_player.quit();
 			mainloop.quit();
+			Gst.deinit();
 		}
 	}
 }

@@ -52,7 +52,14 @@ namespace Bubblegum.UI
 				window.pretty_print(5, Resources.APP_VERSION,
 					TextAlignment.CENTER, 0, ColorPair(85, 108));
 
-				Timeout.add(5000, () => { request_update(); return false; });
+				Timeout.add(5000, () => {
+					request_update();
+					Timeout.add(100, () => {
+						request_update();
+						return true;
+					});
+					return false;
+				});
 
 				return;
 			}
@@ -78,22 +85,49 @@ namespace Bubblegum.UI
 				);
 			}
 	
-			StringBuilder sb = new StringBuilder.sized(current_extents.ncols);
-			sb.append("");
-			for(int x = 0; x < current_extents.ncols-4; x++) {
-				sb.append("");
+			if (App.player.current_position != Gst.CLOCK_TIME_NONE) {
+
+				string se = "" + GFX.nfillu(current_extents.ncols - 4, '') + "";
+				string sf = "" + GFX.nfillu(current_extents.ncols - 4, '') + "";
+
+				window.pretty_print(3,
+					se,
+					TextAlignment.CENTER,
+					TextAttribute.BOLD,
+					ColorPair(158, 108)
+				);
+
+
+
+				int len =
+					"".length * 
+					(int) (
+						((double) (current_extents.ncols - 2)) *
+						((double) App.player.current_position) /
+						((double) App.player.current_duration)
+					);
+
+				window.pretty_print(3, 
+					sf.substring(0, len),
+					TextAlignment.LEFT,
+					TextAttribute.BOLD,
+					ColorPair(158, 108)
+				);
+
+				window.pretty_print(4, 
+					GFX.format_gst_mmss(App.player.current_position),
+					TextAlignment.LEFT,
+					TextAttribute.BOLD,
+					ColorPair(158, 108)
+				);
+
+				window.pretty_print(4, 
+					GFX.format_gst_mmss(App.player.current_duration),
+					TextAlignment.RIGHT,
+					TextAttribute.BOLD,
+					ColorPair(158, 108)
+				);
 			}
-			sb.append("");
-
-			App.log(sb.str);
-			App.log("");
-
-			window.pretty_print(3,
-				sb.str,
-				TextAlignment.CENTER,
-				TextAttribute.BOLD,
-				ColorPair(158, 108)
-			);				
 		}
 	}
 }

@@ -17,7 +17,8 @@ VALAFLAGS =  -g                             \
              --thread                       \
 			 --enable-checking              \
 			 --target-glib=2.32             \
-			 --pkg=curses
+			 --pkg=curses                   \
+			 --enable-experimental
 
 VALA_FILES = main.vala                      \
 			 Resources.vala                 \

@@ -8,25 +8,59 @@ namespace Bubblegum.Core
 
 	public class AudioPlayer : GLib.Object
 	{
-		public signal void media_tags_changed (MediaItem item);
+		public signal void media_metadata_changed (MediaItem item);
 		public signal void finished_playing ();
 
 		private	Gst.Element playbin;
 		private Gst.Bus bus;
 
-		private MediaItem current_media;
+		public MediaItem current_media;
+
+		public uint64 current_duration {
+			get {
+				if (current_media == null) {
+					return CLOCK_TIME_NONE;
+				}
+
+				uint64 duration;
+				Gst.Format fmt = Gst.Format.TIME;
+				if (playbin.query_duration(ref fmt, out duration)) {
+					return duration;
+				} else {
+					return CLOCK_TIME_NONE;
+				}
+			}
+		}
+
+		public uint64 current_position {
+			get {
+				if (current_media == null) {
+					return CLOCK_TIME_NONE;
+				}
+
+				uint64 position;
+				Gst.Format fmt = Gst.Format.TIME;
+				if (playbin.query_position(ref fmt, out position)) {
+					return position;
+				} else {
+					return CLOCK_TIME_NONE;
+				}
+			}
+		}
 
 		public AudioPlayer () {
-			playbin = Gst.ElementFactory.make("playbin2", "playbin");
+			playbin = Gst.ElementFactory.make("playbin", "playbin");
 			bus = playbin.get_bus();
 			bus.add_signal_watch();
 			bus.message.connect(bus_message);
 		}
 
 		~AudioPlayer () {
-			playbin.set_state(Gst.State.NULL);
 		}
 
+		public void quit () {
+			playbin.set_state(Gst.State.NULL);
+		}
 
 		public void play_item (MediaItem m) {
 			current_media = m;
@@ -62,7 +96,12 @@ namespace Bubblegum.Core
 					Gst.TagList tag_list;
 					m.parse_tag(out tag_list);
 					current_media.parse_tags(tag_list);
-					media_tags_changed(current_media);
+					media_metadata_changed(current_media);
+					break;
+
+				case MessageType.DURATION:
+					current_media.update_duration();
+					media_metadata_changed(current_media);
 					break;
 			}
 		}
