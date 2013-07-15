@@ -5,6 +5,8 @@ namespace Bubblegum.UI
 		public static const int PAD_INITIAL_NLINES = 25;
 		public static const int PAD_INITIAL_NCOLS = 80;
 
+		public int xoffs = 0;
+		public int yoffs = 0;
 
 		public ScrollableWindow (
 			WindowExtents e,
@@ -39,16 +41,17 @@ namespace Bubblegum.UI
 
 			int ret;
 			if (decorated) {
+				decor_win.refresh();
 				if (output) {
 					ret = ((Curses.Pad) canvas).refresh(
-						0, 0,
+						xoffs, yoffs,
 						extents.y + 1, extents.x + 1,
 						extents.y + extents.nlines - 4,
 						extents.x +  extents.ncols - 4
 					);
 				} else {
 					ret = ((Curses.Pad) canvas).noutrefresh(
-						1, 1,
+						xoffs, yoffs,
 						extents.y + 1, extents.x + 1,
 						extents.y + extents.nlines - 4,
 						extents.x + extents.ncols - 4
@@ -67,5 +70,7 @@ namespace Bubblegum.UI
 				w.refreshwin(output);
 			}
 		}
+
+		
 	}
 }

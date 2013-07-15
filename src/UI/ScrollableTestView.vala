@@ -18,6 +18,8 @@ namespace Bubblegum.UI
 		}
 
 		public override void init () {
+			App.scroll_up.connect(() => { window.xoffs -= 1; });
+			App.scroll_down.connect(() => { window.xoffs += 1; });
 		}
 
 		public override void compute_layout (WindowExtents e) throws LayoutError {
@@ -29,7 +31,13 @@ namespace Bubblegum.UI
 		}
 
 		public override void update () {
-			window.pretty_print(1, "TESZT", TextAlignment.LEFT, TextAttribute.BOLD, ColorPair(158, 108));
+			for (int i = 1; i < 30; i++)
+				window.pretty_print(i,
+					"TESZT %d".printf(i),
+					TextAlignment.LEFT,
+					TextAttribute.BOLD,
+					ColorPair(158, 108)
+				);
 		}
 
 	}
