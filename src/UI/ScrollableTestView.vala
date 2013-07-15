@@ -7,8 +7,6 @@ namespace Bubblegum.UI
 {
 	public class ScrollableTestView : View
 	{
-		private Window list;
-
 		construct {
 			decor.c = { 239, -1 };
 			decor.b = { 239, -1 };
@@ -18,8 +16,14 @@ namespace Bubblegum.UI
 		}
 
 		public override void init () {
-			App.scroll_up.connect(() => { window.xoffs -= 1; });
-			App.scroll_down.connect(() => { window.xoffs += 1; });
+			App.input_manager.global_bindings['w'] = () => {
+				(window as ScrollableWindow).yoffs -= 1;
+				request_update();
+			};
+			App.input_manager.global_bindings['s'] = () => {
+				(window as ScrollableWindow).yoffs += 1;
+				request_update();
+			};
 		}
 
 		public override void compute_layout (WindowExtents e) throws LayoutError {

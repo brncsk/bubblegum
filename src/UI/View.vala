@@ -49,14 +49,16 @@ namespace Bubblegum.UI
 					: prop_extents.width
 			);
 		}
-
+	
 		public virtual void compute_layout (WindowExtents e) throws LayoutError {
 			current_extents = e;
 			window = new UI.Window(e, decorated, decor);
 			request_update();
 		}
 
-		public abstract void init();
+		public virtual void init () {
+			
+		}
 
 		public InputDelegateMap get_bindings () {
 			return bindings;

@@ -75,6 +75,8 @@ namespace Bubblegum.UI {
 		public abstract LayoutExtentPair get_preferred_extents ();
 		public abstract LayoutExtentPair get_maximum_extents ();
 
+		public abstract void init ();
+
 		public abstract void compute_layout (WindowExtents w) throws LayoutError;
 	}
 
@@ -100,17 +102,21 @@ namespace Bubblegum.UI {
 		public virtual void remove_child (LayoutComponent c) {
 			children.remove(c);
 		}
+
+		public virtual void init () {
+			foreach(var child in children) {
+				child.init();
+			}
+		}
 		
 		public abstract void compute_layout (WindowExtents w) throws LayoutError;
 	}
 
 	public class LayoutRoot : LayoutContainer
 	{
-
 		public override void compute_layout (WindowExtents w) throws LayoutError {
 			children.first().compute_layout(w);
 		}
-
 	}
 
 	public class LayoutVBox : LayoutContainer

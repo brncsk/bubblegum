@@ -29,7 +29,6 @@ namespace Bubblegum.UI
 				decoration = decoration ?? GFX.default_decoration;
 				this.decor_win = new Curses.Window(e.nlines, e.ncols, e.y, e.x);
 				this.canvas = new Curses.Pad(e.nlines - 2, e.ncols - 2);
-				App.log("canvas = %p", this.canvas);
 				GFX.decorate_window(this.decor_win, e, this.decoration);
 			} else {
 				this.canvas = new Curses.Pad(e.nlines, e.ncols);
@@ -37,27 +36,24 @@ namespace Bubblegum.UI
 		}
 
 		public override void refreshwin (bool output = true) {
-			App.log("scrollablewindow.refreshwin");
-
 			int ret;
 			if (decorated) {
 				decor_win.refresh();
 				if (output) {
 					ret = ((Curses.Pad) canvas).refresh(
-						xoffs, yoffs,
+						yoffs, xoffs,
 						extents.y + 1, extents.x + 1,
-						extents.y + extents.nlines - 4,
-						extents.x +  extents.ncols - 4
+						extents.y + extents.nlines - 2,
+						extents.x +  extents.ncols - 2
 					);
 				} else {
 					ret = ((Curses.Pad) canvas).noutrefresh(
-						xoffs, yoffs,
+						yoffs, xoffs,
 						extents.y + 1, extents.x + 1,
-						extents.y + extents.nlines - 4,
-						extents.x + extents.ncols - 4
+						extents.y + extents.nlines - 2,
+						extents.x + extents.ncols - 2
 					);
 				}
-				App.log("ret = %d", ret);
 			} else {
 				if (output) {
 					canvas.refresh();

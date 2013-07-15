@@ -31,6 +31,8 @@ namespace Bubblegum.UI
 		}
 
 		public void run () {
+			Config.layout_root.init();
+
 			try {
 				computing_layout = true;
 				Config.layout_root.compute_layout(WindowExtents() {
@@ -54,10 +56,6 @@ namespace Bubblegum.UI
 			}
 
 			Object c = Object.new(component_type_registry[type_name]);
-
-			if(c is View) {
-				(c as View).init();
-			}
 
 			return (LayoutComponent) c;
 		}

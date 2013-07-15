@@ -28,7 +28,7 @@ namespace Bubblegum.UI
 		private Thread input_thread;
 		private bool running = false;
 
-		private InputDelegateMap global_bindings = new InputDelegateMap();
+		public InputDelegateMap global_bindings = new InputDelegateMap();
 		private InputDelegateMap view_bindings = new InputDelegateMap();
 
 		public InputManager (InputDelegateMap global_bindings)  {

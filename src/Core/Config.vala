@@ -79,7 +79,8 @@ namespace Bubblegum.Core
 		}
 
 		private static void parse_layout_items_recursive (Json.Node n, LayoutContainer c)
-			throws ConfigError {
+			throws ConfigError
+		{
 
 			if (n.get_node_type() != Json.NodeType.OBJECT) {
 				throw new ConfigError.CONFIG_LAYOUT_ERROR("Layout item is not an object.");
