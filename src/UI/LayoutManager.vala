@@ -25,7 +25,6 @@ namespace Bubblegum.UI
 			component_type_registry["PlaylistView"] = typeof(PlaylistView);
 			component_type_registry["LogView"] = typeof(LogView);
 			component_type_registry["VBox"] = typeof(LayoutVBox);
-			component_type_registry["ScrollableTestView"] = typeof(ScrollableTestView);
 //			component_type_registry["HBox"] = typeof(LayoutHBox);
 			
 		}

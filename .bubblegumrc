@@ -4,8 +4,7 @@
 	"spacing": 1,
     "children": [
 	  { "type": "StatusView" },
-	  { "type": "PlaylistView" },
-	  { "type": "ScrollableTestView" }
+	  { "type": "PlaylistView" }
     ]
   },
 

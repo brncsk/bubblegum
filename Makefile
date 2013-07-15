@@ -33,7 +33,6 @@ VALA_FILES = main.vala                      \
 			 Models/Playlist.vala           \
 			                                \
 			 UI/Window.vala                 \
-			 UI/ScrollableWindow.vala       \
 			 UI/View.vala                   \
 			 UI/Layout.vala                 \
 			 UI/LayoutManager.vala          \
@@ -43,7 +42,6 @@ VALA_FILES = main.vala                      \
 			 UI/StatusView.vala             \
 			 UI/PlaylistView.vala           \
 			 UI/LogView.vala                \
-			 UI/ScrollableTestView.vala
 
 CFLAGS =     -lncursesw -O2 -g -pipe -w -lm
 VALA_CFLAGS  := `pkg-config --cflags $(PACKAGES) gthread-2.0`
