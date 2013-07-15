@@ -94,7 +94,7 @@ namespace Bubblegum.UI {
 			canvas.mvprintw(y, x, s);
 		}
 
-		public void pretty_print(int y, string s,
+		public virtual void pretty_print(int y, string s,
 			TextAlignment t = TextAlignment.LEFT,
 			TextAttribute a = 0,
 			ColorPair cp = {-1, -1}

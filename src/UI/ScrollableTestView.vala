@@ -35,9 +35,9 @@ namespace Bubblegum.UI
 		}
 
 		public override void update () {
-			for (int i = 1; i < 30; i++)
+			for (int i = 0; i < 30; i++)
 				window.pretty_print(i,
-					"TESZT %d".printf(i),
+					"TESZT %d".printf(i + 1),
 					TextAlignment.LEFT,
 					TextAttribute.BOLD,
 					ColorPair(158, 108)

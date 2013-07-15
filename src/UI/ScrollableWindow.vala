@@ -5,8 +5,21 @@ namespace Bubblegum.UI
 		public static const int PAD_INITIAL_NLINES = 25;
 		public static const int PAD_INITIAL_NCOLS = 80;
 
-		public int xoffs = 0;
-		public int yoffs = 0;
+		private int _xoffs = 0;
+		private int _yoffs = 0;
+
+		public int xoffs {
+			get { return _xoffs; }
+			set { _xoffs = value.clamp(0, current_ncols - extents.ncols + 2); }
+		}
+
+		public int yoffs {
+			get { return _yoffs; }
+			set { _yoffs = value.clamp(0, current_nlines - extents.nlines + 2); }
+		}
+	
+		public int current_nlines { get; private set; }
+		public int current_ncols  { get; private set; }
 
 		public ScrollableWindow (
 			WindowExtents e,
@@ -35,10 +48,26 @@ namespace Bubblegum.UI
 			}
 		}
 
+		public override void pretty_print(int y, string s,
+			TextAlignment t = TextAlignment.LEFT,
+			TextAttribute a = 0,
+			ColorPair cp = {-1, -1}
+		) {
+			if (s.char_count() > current_ncols) {
+				canvas.resize(current_nlines, current_ncols = s.char_count());
+			}
+
+			if (y > current_nlines - 1) {
+				canvas.resize(current_nlines = y + 1, current_ncols);
+			}
+
+			base.pretty_print(y, s, t, a, cp);
+		}
+
 		public override void refreshwin (bool output = true) {
 			int ret;
+			decor_win.refresh();
 			if (decorated) {
-				decor_win.refresh();
 				if (output) {
 					ret = ((Curses.Pad) canvas).refresh(
 						yoffs, xoffs,
