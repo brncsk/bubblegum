@@ -40,7 +40,6 @@ namespace Bubblegum
 			bindings['q'] = () => { quit(); };
 			bindings['S'] = () => { playback_manager.shuffle = !playback_manager.shuffle; };
 			bindings['R'] = () => { playback_manager.repeat_mode = !playback_manager.repeat_mode; };
-			bindings[ 9 ] = layout_manager.cycle_views;
 
 			input_manager = new InputManager(bindings);
 			playback_manager.current_playlist = Config.playlist;
