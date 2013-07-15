@@ -42,10 +42,10 @@ namespace Bubblegum
 			bindings['R'] = () => { playback_manager.repeat_mode = !playback_manager.repeat_mode; };
 
 			input_manager = new InputManager(bindings);
-			playback_manager.current_playlist = Config.playlist;
-
 			layout_manager.run();
 	
+			playback_manager.current_playlist = Config.playlist;
+
 			mainloop = new MainLoop(null, false);
 			mainloop.run();
 		}
