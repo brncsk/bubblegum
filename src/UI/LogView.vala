@@ -5,8 +5,6 @@ using Bubblegum.Models;
 
 namespace Bubblegum.UI
 {
-	private const string PLAYLIST_URI = "file:///data/music/test.pls";
-
 	public class LogView : View
 	{
 		construct {

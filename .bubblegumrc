@@ -5,7 +5,7 @@
     "children": [
 	  { "type": "StatusView" },
 	  { "type": "PlaylistView" },
-	  { "type": "LogView" }
+	  { "type": "ScrollableTestView" }
     ]
   },
 
