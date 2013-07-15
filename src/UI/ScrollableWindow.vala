@@ -34,7 +34,9 @@ namespace Bubblegum.UI
 			}
 		}
 
-		public new void refresh (bool output = true) {
+		public override void refreshwin (bool output = true) {
+			App.log("scrollablewindow.refreshwin");
+
 			int ret;
 			if (decorated) {
 				if (output) {
@@ -62,7 +64,7 @@ namespace Bubblegum.UI
 			}
 
 			foreach(UI.Window w in subwindows) {
-				w.refresh(output);
+				w.refreshwin(output);
 			}
 		}
 	}

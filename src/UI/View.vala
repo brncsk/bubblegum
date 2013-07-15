@@ -66,7 +66,7 @@ namespace Bubblegum.UI
 			App.draw_synchronized(() => {
 				window.erase();
 				update();
-				window.refresh(!App.layout_manager.computing_layout);
+				window.refreshwin(!App.layout_manager.computing_layout);
 			});
 		}
 	}

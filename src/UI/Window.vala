@@ -141,7 +141,7 @@ namespace Bubblegum.UI {
 			GFX.reset_attrs(canvas, a);
 		}
 
-		public void refresh (bool output = true) {
+		public virtual void refreshwin (bool output = true) {
 			if (decorated) {
 				if (output) {
 					decor_win.refresh();
@@ -159,7 +159,7 @@ namespace Bubblegum.UI {
 			}
 
 			foreach(UI.Window w in subwindows) {
-				w.refresh(output);
+				w.refreshwin(output);
 			}
 		}
 	}
