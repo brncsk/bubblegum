@@ -29,8 +29,7 @@ namespace Bubblegum.UI
 		}
 
 		public override void update () {
-			window.pretty_print(1, "TESZT", TextAlignment.LEFT, TextAttribute.BOLD, ColorPair(158,
-			108));
+			window.pretty_print(1, "TESZT", TextAlignment.LEFT, TextAttribute.BOLD, ColorPair(158, 108));
 		}
 
 	}
