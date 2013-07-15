@@ -33,6 +33,7 @@ namespace Bubblegum
 			Config.init();
 			
 			bindings = new InputDelegateMap();
+			
 			bindings['p'] = playback_manager.previous;
 			bindings['n'] = playback_manager.next;
 			bindings[' '] = playback_manager.toggle;

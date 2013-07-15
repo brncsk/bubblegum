@@ -4,11 +4,12 @@
 	"spacing": 1,
     "children": [
 	  { "type": "StatusView" },
-	  { "type": "PlaylistView" }
+	  { "type": "PlaylistView" },
+	  { "type": "LogView" }
     ]
   },
 
-  "preload_playlist": "file:///data/music/biking.pls",
+  "preload_playlist": "file:///data/music/11-17.pls",
 
   "title_format": [
     "%A – %T",

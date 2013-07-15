@@ -106,6 +106,20 @@ namespace Bubblegum.UI
 			);
 		}
 
+		public static string nfillu(size_t length, unichar fill_char) {
+			StringBuilder s = new StringBuilder.sized(length);
+			for (int x = 0; x < length; x++) {
+				s.append_unichar(fill_char);
+			}
+
+			return s.str;
+		}
+
+		public static string format_gst_mmss(uint64 t) {
+			t = t / Gst.SECOND;
+			return "%02llu:%02llu".printf(t / 60, t % 60);
+		}
+
 		public static void set_colors (Curses.Window w, short fg, short bg) {
 			short pair_id = color_pair_id({fg, bg});
 			w.bkgdset(Curses.COLOR_PAIR(pair_id));
